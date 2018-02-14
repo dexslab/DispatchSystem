@@ -236,7 +236,7 @@ namespace DispatchSystem.Server.External
             // setting a message for invocation on the main thread
             DispatchSystem.Invoke(delegate
             {
-                Player p = Common.GetPlayerByIp(acceptedCall.SourceIP);
+                Player p = Common.GetPlayerByLic(acceptedCall.License);
                 if (p != null)
                 {
                     Common.SendMessage(p, "Dispatch911", new [] {255,0,0}, "Your 911 call has been accepted by a Dispatcher");
@@ -294,7 +294,7 @@ namespace DispatchSystem.Server.External
             {
                 DispatchSystem.Invoke(delegate
                 {
-                    Player p = Common.GetPlayerByIp(call?.SourceIP);
+                    Player p = Common.GetPlayerByIp(call?.License);
 
                     if (p != null)
                     {
@@ -316,7 +316,7 @@ namespace DispatchSystem.Server.External
 
             DispatchSystem.Invoke(() =>
             {
-                Player p = Common.GetPlayerByIp(call?.SourceIP); // getting the player from the call's ip
+                Player p = Common.GetPlayerByLic(call?.License); // getting the player from the call's ip
 
                 if (p != null)
                 {
@@ -347,7 +347,7 @@ namespace DispatchSystem.Server.External
             // notify of assignment
             DispatchSystem.Invoke(() =>
             {
-                Player p = Common.GetPlayerByIp(ofc.SourceIP);
+                Player p = Common.GetPlayerByLic(ofc.License);
                 if (p != null)
                     Common.SendMessage(p, "^8DispatchCAD", new[] { 0, 0, 0 }, $"New assignment added: \"{assignment.Summary}\"");
             });
@@ -403,7 +403,7 @@ namespace DispatchSystem.Server.External
 
             DispatchSystem.Invoke(() =>
             {
-                Player p = Common.GetPlayerByIp(ofc.SourceIP);
+                Player p = Common.GetPlayerByLic(ofc.License);
                 if (p != null)
                     Common.SendMessage(p, "^8DispatchCAD", new[] { 0, 0, 0 }, "Your assignment has been removed by a dispatcher");
             });
@@ -433,7 +433,7 @@ namespace DispatchSystem.Server.External
 
                 DispatchSystem.Invoke(() =>
                 {
-                    Player p = Common.GetPlayerByIp(ofc.SourceIP);
+                    Player p = Common.GetPlayerByLic(ofc.License);
                     if (p != null)
                         Common.SendMessage(p, "^8DispatchCAD", new[] { 0, 0, 0 },
                             $"Dispatcher set status to {(ofc.Status == OfficerStatus.OffDuty ? "Off Duty" : ofc.Status == OfficerStatus.OnDuty ? "On Duty" : "Busy")}");
@@ -464,7 +464,7 @@ namespace DispatchSystem.Server.External
                 // notify of removing of role
                 DispatchSystem.Invoke(delegate
                 {
-                    Player p = Common.GetPlayerByIp(ofc.SourceIP);
+                    Player p = Common.GetPlayerByLic(ofc.License);
 
                     if (p != null)
                         Common.SendMessage(p, "^8DispatchCAD", new[] { 0, 0, 0 }, "You have been removed from your officer role by a dispatcher");

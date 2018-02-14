@@ -97,13 +97,13 @@ namespace DispatchSystem.Server
         {
             Player p = GetPlayerByHandle(handle);
 
-            if (GetOfficer(handle) != null) // checking if the civilian has an officer
-            {
-                SendMessage(p, "DispatchSystem", new[] { 0, 0, 0 }, "You cannot be an officer and a civilian at the same time!");
-                return; // return if they do
-            }
+            //if (GetOfficer(handle) != null) // checking if the civilian has an officer
+            //{
+            //    SendMessage(p, "DispatchSystem", new[] { 0, 0, 0 }, "You cannot be an officer and a civilian at the same time!");
+            //    return; // return if they do
+            //}
 
-            if (GetCivilianByName(first, last) != null && GetPlayerByIp(GetCivilianVeh(handle).SourceIP) != p) // checking if the name already exists in the system
+            if (GetCivilianByName(first, last) != null && GetPlayerByLic(GetCivilianVeh(handle).License) != p) // checking if the name already exists in the system
             {
                 SendMessage(p, "DispatchSystem", new[] { 0, 0, 0 }, "That name already exists in the system!");
                 return; // return if it does
@@ -114,13 +114,13 @@ namespace DispatchSystem.Server
             {
                 int index = Civs.IndexOf(GetCivilian(handle)); // finding the index of the existing civ
 
-                Civs[index] = new Civilian(p.Identifiers["ip"]) { First = first, Last = last }; // setting the index to an instance of a new civilian
+                Civs[index] = new Civilian(p.Identifiers["license"]) { First = first, Last = last }; // setting the index to an instance of a new civilian
 
                 SendMessage(p, "DispatchSystem", new[] { 0, 0, 0 }, $"New name set to: {Civs[index].First} {Civs[index].Last}"); // saying the new name created
             }
             else // if the civ doesn't exist
             {
-                Civs.Add(new Civilian(p.Identifiers["ip"]) { First = first, Last = last }); // add a new civilian to the system
+                Civs.Add(new Civilian(p.Identifiers["license"]) { First = first, Last = last }); // add a new civilian to the system
                 int index = Civs.IndexOf(GetCivilian(handle)); // find the index of the civ
 
                 SendMessage(p, "DispatchSystem", new[] { 0, 0, 0 }, $"New name set to: {Civs[index].First} {Civs[index].Last}"); // say the new name was created
@@ -134,7 +134,7 @@ namespace DispatchSystem.Server
 
                 int index = CivVehs.IndexOf(GetCivilianVeh(handle));
 
-                CivVehs[index] = new CivilianVeh(p.Identifiers["ip"]);
+                CivVehs[index] = new CivilianVeh(p.Identifiers["license"]);
             }
         }
         public static void ToggleWarrant(string handle)
@@ -187,7 +187,7 @@ namespace DispatchSystem.Server
                 }
 
                 EmergencyCall call;
-                CurrentCalls.Add(call = new EmergencyCall(p.Identifiers["ip"], $"{civ.First} {civ.Last}")); // adding and creating the instance of the emergency
+                CurrentCalls.Add(call = new EmergencyCall(p.Identifiers["license"], $"{civ.First} {civ.Last}")); // adding and creating the instance of the emergency
                 SendMessage(p, "Dispatch911", new[] { 255, 0, 0 }, "Please wait for a dispatcher to respond"); // msging to wait for a dispatcher
                 foreach (var peer in Server.ConnectedDispatchers)
                 {
@@ -269,7 +269,7 @@ namespace DispatchSystem.Server
             }
 
             // checking if the plate already exists in the system
-            if (GetCivilianVehByPlate(plate) != null && GetPlayerByIp(GetCivilianVeh(handle).SourceIP) != p)
+            if (GetCivilianVehByPlate(plate) != null && GetPlayerByIp(GetCivilianVeh(handle).License) != p)
             {
                 SendMessage(p, "DispatchSystem", new[] { 0, 0, 0 }, "That vehicle already exists in the system!");
                 return;
@@ -279,12 +279,12 @@ namespace DispatchSystem.Server
             if (GetCivilianVeh(handle) != null)
             {
                 int index = CivVehs.IndexOf(GetCivilianVeh(handle)); // finding the existing index
-                CivVehs[index] = new CivilianVeh(p.Identifiers["ip"]) { Plate = plate, Owner = GetCivilian(handle) }; // setting the index to a new vehicle item
+                CivVehs[index] = new CivilianVeh(p.Identifiers["license"]) { Plate = plate, Owner = GetCivilian(handle) }; // setting the index to a new vehicle item
                 SendMessage(p, "DispatchSystem", new[] { 0, 0, 0 }, $"New vehicle set to {CivVehs[index].Plate}"); // msg of creation
             }
             else
             {
-                CivilianVeh veh = new CivilianVeh(p.Identifiers["ip"]) { Plate = plate, Owner = GetCivilian(handle) }; // creating the new vehicle
+                CivilianVeh veh = new CivilianVeh(p.Identifiers["license"]) { Plate = plate, Owner = GetCivilian(handle) }; // creating the new vehicle
                 CivVehs.Add(veh); // adding the new vehicle to the list of vehicles
 
                 SendMessage(p, "DispatchSystem", new[] { 0, 0, 0 }, $"New vehicle set to {veh.Plate}"); // msg
@@ -388,7 +388,7 @@ namespace DispatchSystem.Server
             // check for officer existing
             if (GetOfficer(handle) == null)
             {
-                Officers.Add(new Officer(p.Identifiers["ip"], callsign)); // adding new officer
+                Officers.Add(new Officer(p.Identifiers["license"], callsign)); // adding new officer
                 SendMessage(p, "DispatchSystem", new[] { 0, 0, 0 }, $"Assigning new officer for callsign {callsign}"); // msg
 #if DEBUG
                 SendMessage(p, "", new[] { 0, 0, 0 }, "Creating new Officer profile...");
@@ -397,7 +397,7 @@ namespace DispatchSystem.Server
             else
             {
                 int index = Officers.IndexOf(GetOfficer(handle)); // finding the index
-                Officers[index] = new Officer(p.Identifiers["ip"], callsign); // setting the index to the specified officer
+                Officers[index] = new Officer(p.Identifiers["license"], callsign); // setting the index to the specified officer
                 SendMessage(p, "DispatchSystem", new[] { 0, 0, 0 }, $"Changing your callsign to {callsign}"); // msg
             }
         }
@@ -541,7 +541,7 @@ namespace DispatchSystem.Server
             if (civ != null)
             {
                 int index = Civs.IndexOf(civ); // finding the index of the civ
-                Player p = GetPlayerByIp(Civs[index].SourceIP); // finding the player that the civ owns
+                Player p = GetPlayerByIp(Civs[index].License); // finding the player that the civ owns
                 Civs[index].CitationCount++; // adding 1 to the citations
                 Civs[index].Tickets.Add(new Ticket(reason, amount)); // adding a ticket to the existing tickets
                 // msgs for the civs
@@ -591,7 +591,7 @@ namespace DispatchSystem.Server
         public static void AddBolo(string handle, string reason)
         {
             Player p = GetPlayerByHandle(handle); // getting the invoker
-            Bolos.Add(new Bolo(p.Name, p.Identifiers["ip"], reason)); // adding teh bolos
+            Bolos.Add(new Bolo(p.Name, p.Identifiers["license"], reason)); // adding teh bolos
             SendMessage(p, "DispatchSystem", new[] { 0, 0, 0 }, $"BOLO for \"{reason}\" added"); // msg
         }
         public static void ViewBolos(string handle)
@@ -634,7 +634,7 @@ namespace DispatchSystem.Server
                             break;
                         // in the case of specific, check for IP then invoke
                         case Permission.Specific:
-                            if (Perms.CivContains(IPAddress.Parse(p.Identifiers["ip"])))
+                            if (Perms.CivContains(p.Identifiers["license"]))
                                 command.Invoke(instance, new object[] { p, args.ToArray() });
                             else
                                 SendMessage(p, "DispatchSystem", new[] { 0, 0, 0 }, "You don't have the permission to do that!");
@@ -656,7 +656,7 @@ namespace DispatchSystem.Server
                             break;
                         // in the case of specific, check the ip then invoke
                         case Permission.Specific:
-                            if (Perms.LeoContains(IPAddress.Parse(p.Identifiers["ip"])))
+                            if (Perms.LeoContains(p.Identifiers["license"]))
                                 command.Invoke(instance, new object[] { p, args.ToArray() });
                             else
                                 SendMessage(p, "DispatchSystem", new[] { 0, 0, 0 }, "You don't have the permission to do that!");

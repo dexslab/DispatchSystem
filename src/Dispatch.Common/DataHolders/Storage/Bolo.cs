@@ -13,16 +13,16 @@ namespace Dispatch.Common.DataHolders.Storage
         string _reason;
         DateTime _creation;
 
-        public string SourceIP { get; }
+        public string License { get; }
         public string Player => _player;
         public string Reason => _reason;
         public DateTime Creation => _creation;
         public BareGuid Id { get; }
 
-        public Bolo(string playerName, string createrIp, string reason)
+        public Bolo(string playerName, string createrLic, string reason)
         {
             _player = playerName;
-            SourceIP = string.IsNullOrWhiteSpace(createrIp) ? string.Empty : createrIp;
+            License = string.IsNullOrWhiteSpace(createrLic) ? string.Empty : createrLic;
             _reason = reason;
             _creation = DateTime.Now;
             Id = BareGuid.NewBareGuid();

@@ -1,4 +1,6 @@
-﻿namespace DispatchSystem.Terminal.Windows.Emergency
+﻿using MaterialSkin;
+
+namespace DispatchSystem.Terminal.Windows.Emergency
 {
     partial class Accept911
     {
@@ -28,6 +30,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            MaterialSkinManager materialSkinManager = MaterialSkinManager.Instance;
+            materialSkinManager.AddFormToManage(this);
+            materialSkinManager.Theme = MaterialSkinManager.Themes.DARK;
+
             this.information = new MaterialSkin.Controls.MaterialLabel();
             this.btnAccept = new MaterialSkin.Controls.MaterialRaisedButton();
             this.materialFlatButton1 = new MaterialSkin.Controls.MaterialFlatButton();

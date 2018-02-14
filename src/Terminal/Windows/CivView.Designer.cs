@@ -1,6 +1,9 @@
-﻿namespace DispatchSystem.Terminal.Windows
+﻿using MaterialSkin;
+using MaterialSkin.Controls;
+
+namespace DispatchSystem.Terminal.Windows
 {
-    partial class CivView
+    partial class CivView : MaterialForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,6 +31,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            MaterialSkinManager materialSkinManager = MaterialSkinManager.Instance;
+            materialSkinManager.AddFormToManage(this);
+            materialSkinManager.Theme = MaterialSkinManager.Themes.DARK;
+
             System.Windows.Forms.ColumnHeader noteColumn;
             this.nameLabel = new MaterialSkin.Controls.MaterialLabel();
             this.firstNameView = new MaterialSkin.Controls.MaterialSingleLineTextField();

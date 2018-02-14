@@ -18,7 +18,7 @@ namespace DispatchSystem.Server
     {
         public static Civilian GetCivilian(string pHandle)
         {
-            return Civs.FirstOrDefault(item => GetPlayerByIp(item.SourceIP)?.Handle == pHandle); // Finding the first civ that has that handle
+            return Civs.FirstOrDefault(item => GetPlayerByIp(item.License)?.Handle == pHandle); // Finding the first civ that has that handle
         }
         public static Civilian GetCivilianByName(string first, string last)
         {
@@ -29,7 +29,7 @@ namespace DispatchSystem.Server
         }
         public static CivilianVeh GetCivilianVeh(string pHandle)
         {
-            return CivVehs.FirstOrDefault(item => GetPlayerByIp(item.SourceIP)?.Handle == pHandle); // Finding the first Civilian Vehicle that has that handle
+            return CivVehs.FirstOrDefault(item => GetPlayerByLic(item.License)?.Handle == pHandle); // Finding the first Civilian Vehicle that has that handle
         }
         public static CivilianVeh GetCivilianVehByPlate(string plate)
         {
@@ -37,11 +37,11 @@ namespace DispatchSystem.Server
         }
         public static Officer GetOfficer(string pHandle)
         {
-            return Officers.FirstOrDefault(item => GetPlayerByIp(item.SourceIP)?.Handle == pHandle); // Finding the first officer with that handle
+            return Officers.FirstOrDefault(item => GetPlayerByLic(item.License)?.Handle == pHandle); // Finding the first officer with that handle
         }
         public static EmergencyCall GetEmergencyCall(string pHandle)
         {
-            return CurrentCalls.FirstOrDefault(item => GetPlayerByIp(item.SourceIP)?.Handle == pHandle); // Finding the first handle with the emergency call
+            return CurrentCalls.FirstOrDefault(item => GetPlayerByLic(item.License)?.Handle == pHandle); // Finding the first handle with the emergency call
         }
 
         public static Assignment GetOfficerAssignment(Officer ofc)
@@ -70,6 +70,11 @@ namespace DispatchSystem.Server
         internal static Player GetPlayerByIp(string ip)
         {
             return new PlayerList().FirstOrDefault(plr => plr.Identifiers["ip"] == ip); // Finding the first player with the right IP
+        }
+
+        internal static Player GetPlayerByLic(string lic)
+        {
+            return new PlayerList().FirstOrDefault(plr => plr.Identifiers["license"] == lic); // Finding the first player with the right IP
         }
 
 

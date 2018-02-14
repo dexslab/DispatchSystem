@@ -1,4 +1,6 @@
-﻿namespace DispatchSystem.Terminal.Windows
+﻿using MaterialSkin;
+
+namespace DispatchSystem.Terminal.Windows
 {
     partial class OfficerView
     {
@@ -28,6 +30,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            MaterialSkinManager materialSkinManager = MaterialSkinManager.Instance;
+            materialSkinManager.AddFormToManage(this);
+            materialSkinManager.Theme = MaterialSkinManager.Themes.DARK;
+
             this.nameView = new MaterialSkin.Controls.MaterialSingleLineTextField();
             this.nameLabel = new MaterialSkin.Controls.MaterialLabel();
             this.btnResync = new MaterialSkin.Controls.MaterialFlatButton();

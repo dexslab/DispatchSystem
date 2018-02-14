@@ -46,6 +46,8 @@ namespace DispatchSystem.Terminal
                     Compress = false,
                     Overridable = true
                 };
+                
+                
 
                 Client.LocalCallbacks.Events.Add("SendInvalidPerms", new LocalEvent(new Func<ConnectedPeer, dynamic, Task>(InvalidPerms)));
                 Client.LocalCallbacks.Events.Add("911alert", new LocalEvent(new Func<ConnectedPeer, Civilian, EmergencyCall, Task>(Alert911)));

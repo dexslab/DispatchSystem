@@ -30,11 +30,17 @@ namespace DispatchSystem.Terminal
                             Environment.Exit(0);
                         }
 
-                        if (!IPAddress.TryParse(line[1], out IPAddress address))
+                        if (IPAddress.TryParse(line[1], out IPAddress address))
                         {
-                            MessageBox.Show("The ip address is invalid.", "DispatchSystem", MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
-                            Environment.Exit(0);
+                           // MessageBox.Show("The ip address is invalid.", "DispatchSystem", MessageBoxButtons.OK,
+                           //     MessageBoxIcon.Error);
+                            //Environment.Exit(0);
+                        }
+                        else
+                        {
+                            IPHostEntry host;
+                            host = Dns.GetHostEntry(line[1]);
+                            address = host.AddressList[0];
                         }
 
                         Ip = address;

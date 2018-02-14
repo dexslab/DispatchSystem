@@ -70,7 +70,7 @@ namespace Dispatch.Common
         public const string DISPATCH_KEY = "dispatcher:";
 
         // A list of specific permissions
-        private readonly List<Tuple<string, string>> items = new List<Tuple<string, string>>();
+        private readonly Dictionary<string,string> items = new Dictionary<string, string>();
 
         /// <summary>
         /// The permission for the Civilian
@@ -86,42 +86,54 @@ namespace Dispatch.Common
         public Permission DispatchPermission { get; private set; } = Permission.Specific;
 
         /// <summary>
-        /// IPs for Civilian specific permissions
+        /// License for Civilian specific permissions
         /// </summary>
-        public IEnumerable<IPAddress> CivilianData
+        public IEnumerable<string> CivilianData
         {
             get
             {
                 foreach (var item in items)
-                    if (item.Item1 == CIV_KEY) // finding where they key is the civ key
-                        if (IPAddress.TryParse(item.Item2, out IPAddress address)) // checking if the ip can be parsable
-                            yield return address; // yield returns the ip to a enumerable
+                    if (item.Value == CIV_KEY) // finding where they key is the civ key
+                        //if (IPAddress.TryParse(item.Value, out IPAddress address)) // checking if the ip can be parsable
+                            yield return item.Key; // yield returns the ip to a enumerable
             }
         }
         /// <summary>
-        /// IPs for the LEO specific permissions
+        /// License for the LEO specific permissions
         /// </summary>
-        public IEnumerable<IPAddress> LeoData
+        public IEnumerable<string> LeoData
         {
             get
             {
                 foreach (var item in items)
-                    if (item.Item1 == COP_KEY) // finding where they key is the leo key
-                        if (IPAddress.TryParse(item.Item2, out IPAddress address)) // checking if the ip can be parsable
-                            yield return address; // yield returns the ip to a enumerable
+                    if (item.Value == COP_KEY) // finding where they key is the leo key
+                        //if (IPAddress.TryParse(item.Value, out IPAddress address)) // checking if the ip can be parsable
+                            yield return item.Key; // yield returns the ip to a enumerable
             }
         }
         /// <summary>
-        /// IPs for the Dispatch specific permissions
+        /// License for the Dispatch specific permissions
         /// </summary>
         public IEnumerable<IPAddress> DispatchData
         {
             get
             {
                 foreach (var item in items)
-                    if (item.Item1 == DISPATCH_KEY) // finding where they key is the dispatch key
-                        if (IPAddress.TryParse(item.Item2, out IPAddress address)) // checking if the ip can be parsable
-                            yield return address; // yield returns the ip to a enumerable
+                    if (item.Value == DISPATCH_KEY)
+                    { // finding where they key is the dispatch key
+                        if (IPAddress.TryParse(item.Key, out IPAddress address))
+                        { // checking if the ip can be parsable
+                            // yield returns the ip to a enumerable
+                        }
+                        else
+                        {
+                            IPHostEntry host;
+                            host = Dns.GetHostEntry(item.Key);
+                            address = host.AddressList[0];
+                        }
+                        yield return address;
+                    }
+
             }
         }
 
@@ -188,7 +200,28 @@ namespace Dispatch.Common
                         break;
                     // if no conditions apply, add the line as an IP to items
                     default:
-                        items.Add(new Tuple<string, string>(current, line));
+                        switch (current)
+                        {
+                            case CIV_KEY:
+                                if (!CivContains(line))
+                                {
+                                    items.Add(line, current);
+                                }
+                                break;
+                            case COP_KEY:
+                                if (!LeoContains(line))
+                                {
+                                    items.Add(line, current);
+                                }
+                                break;
+                            case DISPATCH_KEY:
+                                if (!DispatchContains(IPAddress.Parse(line)))
+                                {
+                                    items.Add(line, current);
+                                }
+                                break;
+                        }
+                        
                         break;
                 }
             }
@@ -196,8 +229,8 @@ namespace Dispatch.Common
         #endregion
 
         // ez contains
-        public bool CivContains(IPAddress address) => CivilianData.Contains(address);
-        public bool LeoContains(IPAddress address) => LeoData.Contains(address);
+        public bool CivContains(string lic) => CivilianData.Contains(lic);
+        public bool LeoContains(string lic) => LeoData.Contains(lic);
         public bool DispatchContains(IPAddress address) => DispatchData.Contains(address);
     }
 }

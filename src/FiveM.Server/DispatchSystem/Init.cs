@@ -79,7 +79,10 @@ namespace DispatchSystem.Server
             Log.WriteLine("Parsing permission information");
             Perms = Permissions.Get;
             Log.WriteLine("Permissions set!");
-
+            foreach (string s in Perms.LeoData)
+            {
+                Log.WriteLine($"Leo: {s}");
+            }
             // reading config, then starting the server is config true
             if (Cfg.GetIntValue("server", "enable", 0) == 1)
             {
@@ -97,7 +100,7 @@ namespace DispatchSystem.Server
                 {
                     Log.WriteLine("Reading database...");
                     Data = new Database("dispatchsystem.data"); // creating the database instance
-                    Tuple<StorageManager<Civilian>, StorageManager<CivilianVeh>> read;
+                    Tuple<StorageManager<Civilian>, StorageManager<CivilianVeh>, StorageManager<Officer>> read;
                     try
                     {
                         read = Data.Read(); // reading the serialized tuple from the database
@@ -124,10 +127,11 @@ namespace DispatchSystem.Server
                             Log.WriteLineSilent(e2.ToString());
                             return;
                         }
-                        read = new Tuple<StorageManager<Civilian>, StorageManager<CivilianVeh>>(null, null);
+                        read = new Tuple<StorageManager<Civilian>, StorageManager<CivilianVeh>,StorageManager<Officer>>(null, null, null);
                     }
                     Civs = read?.Item1 ?? new StorageManager<Civilian>();
                     CivVehs = read?.Item2 ?? new StorageManager<CivilianVeh>();
+                    Officers = read?.Item3 ?? new StorageManager<Officer>();
                     Log.WriteLine("Read and set database"); // logging done
 
                     // starting while loop for writing the database
@@ -139,7 +143,7 @@ namespace DispatchSystem.Server
                         Log.WriteLineSilent("Writing current information to database");
 #endif
                         // creating the tuple to write
-                        var write = new Tuple<StorageManager<Civilian>, StorageManager<CivilianVeh>>(Civs, CivVehs);
+                        var write = new Tuple<StorageManager<Civilian>, StorageManager<CivilianVeh>,StorageManager<Officer>>(Civs, CivVehs,Officers);
                         // writing the information
                         Data.Write(write);
                         // waiting 3 minutes before doing it again

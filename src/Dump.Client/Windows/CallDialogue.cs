@@ -22,7 +22,7 @@ namespace DispatchSystem.Dump.Client.Windows
             foreach (var call in calls)
             {
                 ListViewItem item = new ListViewItem(call?.Id.ToString() ?? "NULL");
-                item.SubItems.Add(call?.SourceIP ?? "NULL");
+                item.SubItems.Add(call?.License ?? "NULL");
                 item.SubItems.Add(call?.PlayerName ?? "NULL");
                 item.SubItems.Add(call?.Accepted.ToString() ?? "NULL");
                 item.SubItems.Add(call?.Creation.ToString(CultureInfo.InvariantCulture) ?? "NULL");

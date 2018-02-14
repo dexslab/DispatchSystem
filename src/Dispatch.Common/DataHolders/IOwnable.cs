@@ -8,6 +8,6 @@ namespace Dispatch.Common.DataHolders
 {
     public interface IOwnable
     {
-        string SourceIP { get; }
+        string License { get; }
     }
 }

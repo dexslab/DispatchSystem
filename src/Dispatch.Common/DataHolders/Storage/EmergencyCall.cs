@@ -6,10 +6,10 @@ namespace Dispatch.Common.DataHolders.Storage
     [Serializable]
     public class EmergencyCall : IOwnable, IDataHolder
     {
-        public EmergencyCall(string ip, string playerName)
+        public EmergencyCall(string lic, string playerName)
         {
             Id = BareGuid.NewBareGuid();
-            SourceIP = ip;
+            License = lic;
             Creation = DateTime.Now;
             PlayerName = playerName;
         }
@@ -17,7 +17,7 @@ namespace Dispatch.Common.DataHolders.Storage
         public bool Accepted { get; set; }
         public string PlayerName { get; }
 
-        public string SourceIP { get; }
+        public string License { get; }
         public DateTime Creation { get; }
         public BareGuid Id { get; }
     }

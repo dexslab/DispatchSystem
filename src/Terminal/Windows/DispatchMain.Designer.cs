@@ -1,6 +1,9 @@
-﻿namespace DispatchSystem.Terminal.Windows
+﻿using MaterialSkin;
+using MaterialSkin.Controls;
+
+namespace DispatchSystem.Terminal.Windows
 {
-    partial class DispatchMain
+    partial class DispatchMain : MaterialForm
     {
         /// <summary>
         /// Required designer variable.
@@ -166,7 +169,7 @@
             this.itemSummary});
             this.assignments.ContextMenuStrip = this.assignmentsRightClick;
             this.assignments.Depth = 0;
-            this.assignments.Font = new System.Drawing.Font("Roboto", 32F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.World);
+            this.assignments.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F);
             this.assignments.FullRowSelect = true;
             this.assignments.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.assignments.Location = new System.Drawing.Point(6, 6);
@@ -326,7 +329,7 @@
             this.ofcStatus});
             this.officers.ContextMenuStrip = this.officersRightClick;
             this.officers.Depth = 0;
-            this.officers.Font = new System.Drawing.Font("Roboto", 32F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.World);
+            this.officers.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F);
             this.officers.FullRowSelect = true;
             this.officers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.officers.Location = new System.Drawing.Point(6, 6);
@@ -444,7 +447,7 @@
             this.bolo});
             this.bolos.ContextMenuStrip = this.bolosRightClick;
             this.bolos.Depth = 0;
-            this.bolos.Font = new System.Drawing.Font("Roboto", 32F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.World);
+            this.bolos.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F);
             this.bolos.FullRowSelect = true;
             this.bolos.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.bolos.Location = new System.Drawing.Point(6, 6);
@@ -503,11 +506,9 @@
             // 
             // DispatchMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.ClientSize = new System.Drawing.Size(1308, 845);
+            this.ClientSize = new System.Drawing.Size(1280, 720);
             this.Controls.Add(this.btnResync);
             this.Controls.Add(this.tabs);
             this.Controls.Add(this.tabSelector);
@@ -519,9 +520,9 @@
             this.Controls.Add(this.lastName);
             this.Controls.Add(this.firstName);
             this.Controls.Add(this.civLabel);
-            this.MaximizeBox = false;
+            this.ImeMode = System.Windows.Forms.ImeMode.Disable;
             this.Name = "DispatchMain";
-            this.Sizable = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.Text = "Terminal";
             this.assignmentsRightClick.ResumeLayout(false);
             this.tabs.ResumeLayout(false);

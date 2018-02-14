@@ -79,7 +79,7 @@ namespace DispatchSystem.Terminal.Windows
             Officer result = await Program.Client.Peer.RemoteCallbacks.Functions["GetOfficer"].Invoke<Officer>(ofc.Id);
             if (result != null)
             {
-                if (result.SourceIP != string.Empty && result.Callsign != string.Empty)
+                if (result.License != string.Empty && result.Callsign != string.Empty)
                 {
                     Invoke((MethodInvoker)async delegate
                     {

@@ -21,7 +21,7 @@ namespace DispatchSystem.Dump.Client.Windows
             foreach (var civ in civs)
             {
                 ListViewItem item = new ListViewItem(civ?.Id.ToString() ?? "NULL");
-                item.SubItems.Add(civ?.SourceIP ?? "NULL");
+                item.SubItems.Add(civ?.License ?? "NULL");
                 item.SubItems.Add(civ?.First ?? "NULL");
                 item.SubItems.Add(civ?.Last ?? "NULL");
                 item.SubItems.Add(civ?.WarrantStatus.ToString() ?? "NULL");
