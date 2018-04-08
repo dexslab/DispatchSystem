@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dispatch.Common</RootNamespace>
     <AssemblyName>Dispatch.Common</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ref\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -50,6 +55,7 @@
     <Compile Include="DataHolders\Storage\Bolo.cs" />
     <Compile Include="DataHolders\Storage\Civilian.cs" />
     <Compile Include="DataHolders\Storage\EmergencyCall.cs" />
+    <Compile Include="DataHolders\Storage\Extensions.cs" />
     <Compile Include="DataHolders\Storage\PlayerBase.cs" />
     <Compile Include="DataHolders\Storage\CivilianVeh.cs" />
     <Compile Include="DataHolders\Storage\Officer.cs" />

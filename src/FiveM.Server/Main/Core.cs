@@ -13,6 +13,8 @@ using DispatchSystem.Server.External;
 using DispatchSystem.Server.RequestHandling;
 
 using EZDatabase;
+using Fleck;
+using Newtonsoft.Json.Linq;
 
 namespace DispatchSystem.Server.Main
 {
@@ -77,6 +79,12 @@ namespace DispatchSystem.Server.Main
         public static RequestData SetDispatchPerms(object[] args)
         {
             DispatchPerms = args.Select(x => (string) x).ToList();
+#if DEBUG
+            foreach (string s in DispatchPerms)
+            {
+                Log.WriteLine($"{s} added to dispatch");
+            }
+#endif
             return new RequestData(null, DispatchPerms.Select(x => (EventArgument) x).ToArray());
         }
         #endregion
@@ -135,7 +143,7 @@ namespace DispatchSystem.Server.Main
             var civ = Common.GetCivilian(handle);
             var oldVeh = Common.GetCivilianVeh(handle);
 
-            if (Common.GetCivilianByName(first, last) != null && Common.GetPlayerByIp(civ?.SourceIP) != p) // checking if the name already exists in the system
+            if (Common.GetCivilianByName(first, last) != null && Common.GetPlayerByLicense(civ?.License) != p) // checking if the name already exists in the system
             {
                 return new RequestData("civ_name_exist", new EventArgument[] {Common.GetPlayerId(p)});
             }
@@ -152,13 +160,13 @@ namespace DispatchSystem.Server.Main
             {
                 int index = Civilians.IndexOf(Common.GetCivilian(handle)); // finding the index of the existing civ
 
-                civ = new Civilian(p.Identifiers["ip"]) { First = first, Last = last }; // setting the index to an instance of a new civilian
+                civ = new Civilian(p.Identifiers["license"]) { First = first, Last = last }; // setting the index to an instance of a new civilian
                 oldCivInfo = Civilians[index].ToArray();
                 Civilians[index] = civ;
             }
             else // if the civ doesn't exist
             {
-                civ = new Civilian(p.Identifiers["ip"]) {First = first, Last = last};
+                civ = new Civilian(p.Identifiers["license"]) {First = first, Last = last};
                 Civilians.Add(civ); // add a new civilian to the system
 
 #if DEBUG
@@ -206,16 +214,22 @@ namespace DispatchSystem.Server.Main
             if (civ == null) return new RequestData("civ_not_exist", new EventArgument[] {Common.GetPlayerId(p)});
 
             // checking how many active dispatchers there are
-            if (Server.ConnectedDispatchers.Length == 0)
+            if (DispatchServer.ConnectedDispatchers.Count == 0)
                 return new RequestData("civ_911_no_dispatchers", new EventArgument[] {Common.GetPlayerId(p)});
 
-            emerCall = new EmergencyCall(p.Identifiers["ip"],
+            emerCall = new EmergencyCall(p.Identifiers[""],
                 $"{civ.First} {civ.Last}");
             CurrentCalls.Add(emerCall); // adding and creating the instance of the emergency
-            foreach (var peer in Server.ConnectedDispatchers)
+            foreach (var peer in DispatchServer.ConnectedDispatchers.Values)
             {
-                await peer.RemoteCallbacks.Events["911alert"]
-                    .Invoke(civ, emerCall); // notifying the dispatchers of the 911 call
+                //await peer.RemoteCallbacks.Events["911alert"]
+                //    .Invoke(civ, emerCall); // notifying the dispatchers of the 911 call
+                JObject obj = new JObject {
+                    {"message", "911alert" },
+                    {"civ", civ.ToJson() },
+                    {"call", emerCall.ToJson() }
+                };
+                await peer.Send(obj.ToString());
             }
 
             return new RequestData(null, new EventArgument[] {Common.GetPlayerId(p)});
@@ -231,9 +245,13 @@ namespace DispatchSystem.Server.Main
             }
 
             var dispatcherIp = Server.Calls[call.Id]; // getting the dispatcher ip from the calls
-            var peer = Server.ConnectedDispatchers.First(x => x.RemoteIP == dispatcherIp); // finding the peer from the given IP
-            await peer.RemoteCallbacks.Events[call.Id.ToString()].Invoke(msg); // invoking the remote event for the message in the peer
-
+            IWebSocketConnection peer = DispatchServer.ConnectedDispatchers[dispatcherIp]; // finding the peer from the given IP
+            //await peer.RemoteCallbacks.Events[call.Id.ToString()].Invoke(msg); // invoking the remote event for the message in the peer
+            JObject obj = new JObject(new JProperty("message", "emsg"),
+                new JProperty("id",call.Id.ToString()),
+                new JProperty("emsg",msg)
+                );
+            await peer.Send(obj.ToString());
             return new RequestData(null, new EventArgument[] {Common.GetPlayerId(p), msg});
         }
         public static async Task<RequestData> EndEmergency(string handle)
@@ -253,8 +271,8 @@ namespace DispatchSystem.Server.Main
 
             // finding the dispatcher ip
             var dispatcherIp = Server.Calls.ContainsKey(call.Id) ? Server.Calls[call.Id] : null;
-            var peer = Server.ConnectedDispatchers.FirstOrDefault(x => x.RemoteIP == dispatcherIp); // finding the peer from the ip
-            var task = peer?.RemoteCallbacks.Events?["end" + call.Id].Invoke(); // creating the task from the events
+            var peer = DispatchServer.ConnectedDispatchers[dispatcherIp]; // finding the peer from the ip
+            var task = peer?.Send("end"); // creating the task from the events
 
             // removing the call from the calls list
             CurrentCalls.Remove(call);
@@ -278,7 +296,7 @@ namespace DispatchSystem.Server.Main
                 return new RequestData("civ_not_exist", new EventArgument[] {Common.GetPlayerId(p)});
             }
             // checking if the plate already exists in the system
-            if (Common.GetCivilianVehByPlate(plate) != null && Common.GetPlayerByIp(veh.SourceIP) != p)
+            if (Common.GetCivilianVehByPlate(plate) != null && Common.GetPlayerByLicense(veh.License) != p)
             {
                 return new RequestData("veh_plate_exist", new EventArgument[] {Common.GetPlayerId(p), plate});
             }
@@ -290,12 +308,12 @@ namespace DispatchSystem.Server.Main
                 int index = CivilianVehs.IndexOf(Common.GetCivilianVeh(handle)); // finding the existing index
                 old = CivilianVehs[index].ToArray();
                 // setting the index to a new vehicle item
-                veh = new CivilianVeh(p.Identifiers["ip"]) {Plate = plate, Owner = Common.GetCivilian(handle)};
+                veh = new CivilianVeh(p.Identifiers["license"]) {Plate = plate, Owner = Common.GetCivilian(handle)};
                 CivilianVehs[index] = veh;
             }
             else
             {
-                veh = new CivilianVeh(p.Identifiers["ip"]) { Plate = plate, Owner = Common.GetCivilian(handle) }; // creating the new vehicle
+                veh = new CivilianVeh(p.Identifiers["license"]) { Plate = plate, Owner = Common.GetCivilian(handle) }; // creating the new vehicle
                 CivilianVehs.Add(veh); // adding the new vehicle to the list of vehicles
             }
 
@@ -386,7 +404,7 @@ namespace DispatchSystem.Server.Main
             // check for officer existing
             if (ofc == null)
             {
-                ofc = new Officer(p.Identifiers["ip"], callsign);
+                ofc = new Officer(p.Identifiers["license"], callsign);
                 Officers.Add(ofc); // adding new officer
 #if DEBUG
                 Common.SendMessage(p, "", new[] {0, 0, 0}, "Creating new Officer profile...");
@@ -396,7 +414,7 @@ namespace DispatchSystem.Server.Main
             {
                 int index = Officers.IndexOf(ofc); // finding the index
                 old = ofc.ToArray();
-                ofc = new Officer(p.Identifiers["ip"], callsign);
+                ofc = new Officer(p.Identifiers["license"], callsign);
                 Officers[index] = ofc; // setting the index to the specified officer
             }
 
@@ -490,7 +508,7 @@ namespace DispatchSystem.Server.Main
             // checking for civ
             if (civ == null) return new RequestData("civ_not_exist", new EventArgument[] {Common.GetPlayerId(invoker)});
 
-            Player p = Common.GetPlayerByIp(civ.SourceIP); // finding the player that the civ owns
+            Player p = Common.GetPlayerByLicense(civ.License); // finding the player that the civ owns
             civ.CitationCount++; // adding 1 to the citations
             Ticket ticket = new Ticket(reason, amount);
             civ.Tickets.Add(ticket); // adding a ticket to the existing tickets
@@ -511,7 +529,7 @@ namespace DispatchSystem.Server.Main
             // checking for leo
             if (ofc == null) return new RequestData("leo_not_exist", new EventArgument[] {Common.GetPlayerId(p)});
 
-            var bolo = new Bolo(p.Name, p.Identifiers["ip"], reason);// creating new bolo
+            var bolo = new Bolo(p.Name, p.Identifiers["license"], reason);// creating new bolo
             Bolos.Add(bolo); // adding teh bolos
             return new RequestData(null, new EventArgument[] {Common.GetPlayerId(p), bolo.ToArray()});
         }

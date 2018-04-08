@@ -28,7 +28,7 @@ namespace DispatchSystem.Dump.Client.Windows
             foreach (var officer in officers)
             {
                 ListViewItem item = new ListViewItem(officer?.Id.ToString() ?? "NULL");
-                item.SubItems.Add(officer?.SourceIP ?? "NULL");
+                item.SubItems.Add(officer?.License ?? "NULL");
                 item.SubItems.Add(officer?.Creation.ToString(CultureInfo.InvariantCulture) ?? "NULL");
                 item.SubItems.Add(officer?.Callsign ?? "NULL");
                 item.SubItems.Add(officer?.Status.ToString() ?? "NULL");

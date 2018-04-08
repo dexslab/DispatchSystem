@@ -8,9 +8,9 @@ set /p VERSION="Version: "
 
 rem Setting constants
 set BASE_FILES=..\serverfiles
-set CLIENT_FILES=Terminal\Release
-set SERVER_FILES=FiveM.Server\Release
-set DUMP_FILES=Dump.Client\Release
+set CLIENT_FILES=Terminal\Debug
+set SERVER_FILES=FiveM.Server\Debug
+set DUMP_FILES=Dump.Client\Debug
 set MAIN_FILES=important
 
 set DEL_FILES=*.pdb *.config *.zip CitizenFX.Core.dll

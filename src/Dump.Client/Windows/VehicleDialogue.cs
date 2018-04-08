@@ -22,7 +22,7 @@ namespace DispatchSystem.Dump.Client.Windows
             foreach (var veh in vehicles)
             {
                 ListViewItem item = new ListViewItem(veh?.Id.ToString() ?? "NULL");
-                item.SubItems.Add(veh?.SourceIP ?? "NULL");
+                item.SubItems.Add(veh?.License ?? "NULL");
                 item.SubItems.Add(veh?.Creation.ToString(CultureInfo.InvariantCulture) ?? "NULL");
                 item.SubItems.Add(veh?.Plate ?? "NULL");
                 item.SubItems.Add(veh?.Owner?.Id.ToString() ?? "NULL");

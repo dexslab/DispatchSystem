@@ -5,16 +5,16 @@ namespace Dispatch.Common.DataHolders.Storage
     [Serializable]
     public abstract class PlayerBase : IDataHolder, IOwnable, IEquatable<PlayerBase>, IEventInfo
     {
-        public string SourceIP { get; protected set; }
+        public string License { get; protected set; }
         public virtual DateTime Creation { get; }
         public virtual BareGuid Id { get; }
 
-        protected PlayerBase(string ip)
+        protected PlayerBase(string lic)
         {
             Creation = DateTime.Now;
             Id = BareGuid.NewBareGuid();
 
-            SourceIP = string.IsNullOrWhiteSpace(ip) ? string.Empty : ip;
+            License = string.IsNullOrWhiteSpace(lic) ? string.Empty : lic;
         }
         public abstract EventArgument[] ToArray();
         public override int GetHashCode() => Id.GetHashCode();

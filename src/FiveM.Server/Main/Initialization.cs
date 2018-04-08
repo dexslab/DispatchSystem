@@ -142,11 +142,19 @@ namespace DispatchSystem.Server.Main
 
             Log.WriteLine("Starting Request Handler");
             Core.RequestHandler = new RequestHandler();
+            API.RegisterCommand("911", new Action<int, List<object>, string>((source, arguments, raw) =>
+            {
+                
+            }), false);
 
+            API.RegisterCommand("dsreg", new Action<int, List<object>, string>((source, arguments, raw) =>
+            {
+
+            }), true);
             // reading config, then starting the server is config true
             if (Core.Config.GetIntValue("server", "enable", 0) == 1)
             {
-                ThreadPool.QueueUserWorkItem(x => Core.Server = new DispatchServer(Core.Config, Core.DispatchPerms), null);
+                ThreadPool.QueueUserWorkItem(x => Core.Server = new DispatchServer(Core.Config), null);
                 Log.WriteLine("Starting DISPATCH server");
             }
             else
@@ -160,7 +168,7 @@ namespace DispatchSystem.Server.Main
                 {
                     Log.WriteLine("Reading database...");
                     Core.Data = new Database("dispatchsystem.data"); // creating the database instance
-                    Tuple<StorageManager<Civilian>, StorageManager<CivilianVeh>> read;
+                    Tuple<StorageManager<Civilian>, StorageManager<CivilianVeh>, StorageManager<Officer>,StorageManager<Bolo>,StorageManager<EmergencyCall>> read;
                     try
                     {
                         read = Core.Data.Read(); // reading the serialized tuple from the database
@@ -187,10 +195,13 @@ namespace DispatchSystem.Server.Main
                             Log.WriteLineSilent(e2.ToString());
                             return;
                         }
-                        read = new Tuple<StorageManager<Civilian>, StorageManager<CivilianVeh>>(null, null);
+                        read = new Tuple<StorageManager<Civilian>, StorageManager<CivilianVeh>, StorageManager<Officer>,StorageManager<Bolo>, StorageManager<EmergencyCall>>(null, null,null,null,null);
                     }
                     Core.Civilians = read?.Item1 ?? new StorageManager<Civilian>();
                     Core.CivilianVehs = read?.Item2 ?? new StorageManager<CivilianVeh>();
+                    Core.Officers = read?.Item3 ?? new StorageManager<Officer>();
+                    Core.Bolos = read?.Item4 ?? new StorageManager<Bolo>();
+                    Core.CurrentCalls = read?.Item5 ?? new StorageManager<EmergencyCall>();
                     Log.WriteLine("Read and set database"); // logging done
 
                     // starting while loop for writing the database
@@ -202,7 +213,7 @@ namespace DispatchSystem.Server.Main
                         Log.WriteLineSilent("Writing current information to database");
 #endif
                         // creating the tuple to write
-                        var write = new Tuple<StorageManager<Civilian>, StorageManager<CivilianVeh>>(Core.Civilians, Core.CivilianVehs);
+                        var write = new Tuple<StorageManager<Civilian>, StorageManager<CivilianVeh>,StorageManager<Officer>, StorageManager<Bolo>, StorageManager<EmergencyCall>>(Core.Civilians, Core.CivilianVehs,Core.Officers,Core.Bolos,Core.CurrentCalls);
                         // writing the information
                         Core.Data.Write(write);
                         // waiting 3 minutes before doing it again

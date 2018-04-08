@@ -9,7 +9,8 @@ using DispatchSystem.Server.RequestHandling;
 using static DispatchSystem.Server.Main.Core;
 
 using EZDatabase;
-using Json;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace DispatchSystem.Server.Main
 {
@@ -46,8 +47,8 @@ namespace DispatchSystem.Server.Main
                     StorageManager<Bolo>, StorageManager<EmergencyCall>, StorageManager<Officer>, List<string>>(Civilians,
                     CivilianVehs, Bolos, CurrentCalls, Officers, DispatchPerms);
                 db.Write(write2); // write info
-
-                json = JsonParser.Serialize(write2);
+                
+                json = JsonConvert.SerializeObject(write2);
             }
             catch (Exception e)
             {
@@ -103,7 +104,7 @@ namespace DispatchSystem.Server.Main
                         Log.WriteLineSilent("Web Callback: \"{0}\"", x[1]);
 #endif
                         
-                        var obj = JsonParser.FromJson((string)x[1]);
+                        var obj = JsonConvert.DeserializeObject<Dictionary<string,string>>((string)x[1]);
                         if ((string)obj["message"] != "success")
                             throw new InvalidOperationException("Return code was not \"success\"");
                         

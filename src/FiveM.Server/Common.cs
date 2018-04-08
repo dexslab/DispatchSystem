@@ -12,7 +12,7 @@ namespace DispatchSystem.Server
     {
         public static Civilian GetCivilian(string pHandle)
         {
-            return Core.Civilians.FirstOrDefault(item => GetPlayerByIp(item.SourceIP)?.Handle == pHandle); // Finding the first civ that has that handle
+            return Core.Civilians.FirstOrDefault(item => GetPlayerByLicense(item.License)?.Handle == pHandle); // Finding the first civ that has that handle
         }
         public static Civilian GetCivilianByName(string first, string last)
         {
@@ -23,7 +23,7 @@ namespace DispatchSystem.Server
         }
         public static CivilianVeh GetCivilianVeh(string pHandle)
         {
-            return Core.CivilianVehs.FirstOrDefault(item => GetPlayerByIp(item.SourceIP)?.Handle == pHandle); // Finding the first Civilian Vehicle that has that handle
+            return Core.CivilianVehs.FirstOrDefault(item => GetPlayerByLicense(item.License)?.Handle == pHandle); // Finding the first Civilian Vehicle that has that handle
         }
         public static CivilianVeh GetCivilianVehByPlate(string plate)
         {
@@ -31,11 +31,11 @@ namespace DispatchSystem.Server
         }
         public static Officer GetOfficer(string pHandle)
         {
-            return Core.Officers.FirstOrDefault(item => GetPlayerByIp(item.SourceIP)?.Handle == pHandle); // Finding the first officer with that handle
+            return Core.Officers.FirstOrDefault(item => GetPlayerByLicense(item.License)?.Handle == pHandle); // Finding the first officer with that handle
         }
         public static EmergencyCall GetEmergencyCall(string pHandle)
         {
-            return Core.CurrentCalls.FirstOrDefault(item => GetPlayerByIp(item.SourceIP)?.Handle == pHandle); // Finding the first handle with the emergency call
+            return Core.CurrentCalls.FirstOrDefault(item => GetPlayerByLicense(item.License)?.Handle == pHandle); // Finding the first handle with the emergency call
         }
 
         public static Assignment GetOfficerAssignment(Officer ofc)
@@ -61,9 +61,9 @@ namespace DispatchSystem.Server
             return new PlayerList().FirstOrDefault(plr => plr.Handle == handle); // Finding the first player with the handle
         }
 
-        internal static Player GetPlayerByIp(string ip)
+        internal static Player GetPlayerByLicense(string ip)
         {
-            return new PlayerList().FirstOrDefault(plr => plr.Identifiers["ip"] == ip); // Finding the first player with the right IP
+            return new PlayerList().FirstOrDefault(plr => plr.Identifiers["license"] == ip); // Finding the first player with the right IP
         }
 
         public static int GetPlayerId(Player p) => int.Parse(p?.Handle ?? "-1");

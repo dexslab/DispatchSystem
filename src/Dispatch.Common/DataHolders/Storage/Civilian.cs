@@ -40,7 +40,7 @@ namespace Dispatch.Common.DataHolders.Storage
         public List<Ticket> Tickets { get; set; }
         public override DateTime Creation { get; }
 
-        public Civilian(string ip) : base(ip)
+        public Civilian(string license) : base(license)
         {
             Notes = new List<string>();
             Tickets = new List<Ticket>();
@@ -59,7 +59,7 @@ namespace Dispatch.Common.DataHolders.Storage
                 CitationCount,
                 Notes.Select(x => (EventArgument)x).ToArray(),
                 Tickets.Select(x => (EventArgument)x.ToArray()).ToArray(),
-                new EventArgument[] {SourceIP, Id.ToString(), Creation.Ticks}
+                new EventArgument[] { License, Id.ToString(), Creation.Ticks}
             };
         }
 
@@ -110,12 +110,17 @@ namespace Dispatch.Common.DataHolders.Storage
         {
             var name = rndNames[rnd.Next(rndNames.Count)].Split(' ');
 
-            return new Civilian(string.Empty)
+            Civilian test =  new Civilian(string.Empty)
             {
                 First = name[0],
                 Last = name[1],
                 CitationCount = rnd.Next(0, 11)
             };
+            for(int i = 1; i <= test.CitationCount; i++)
+            {
+                test.Tickets.Add(new Ticket($"Punching {rndNames[rnd.Next(rndNames.Count)]}", rnd.Next(50, 250)));
+            }
+            return test;
         }
     }
 }

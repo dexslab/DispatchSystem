@@ -12,11 +12,12 @@ namespace Dispatch.Common.DataHolders.Storage
         public bool Registered { get; set; }
         public bool Insured { get; set; }
 
-        public CivilianVeh(string ip) : base(ip)
+        public CivilianVeh(string lic) : base(lic)
         {
             StolenStatus = false;
             Registered = true;
             Insured = true;
+            Owner = new Civilian(String.Empty);
         }
 
         public override EventArgument[] ToArray()
@@ -28,7 +29,7 @@ namespace Dispatch.Common.DataHolders.Storage
                 StolenStatus,
                 Registered,
                 Insured,
-                new EventArgument[] {SourceIP, Id.ToString(), Creation.Ticks}
+                new EventArgument[] { License, Id.ToString(), Creation.Ticks}
             };
         }
     }

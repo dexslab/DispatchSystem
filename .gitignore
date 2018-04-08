@@ -47,3 +47,6 @@ src/bin/*
 src/.vs/*
 *.DotSettings.user
 .idea/
+
+# SyncThing
+*sync-conflict*

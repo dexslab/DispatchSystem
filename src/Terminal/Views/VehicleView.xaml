@@ -1,0 +1,32 @@
+﻿<UserControl x:Class="Terminal.Views.VehicleView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Terminal.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="400">
+    <StackPanel Width="300">
+        <Grid HorizontalAlignment="Left" Width="300">
+            <Label Content="Owner:" HorizontalAlignment="Left"/>
+            <TextBlock Text="{Binding Name}" HorizontalAlignment="Right" />
+        </Grid>
+        <Grid HorizontalAlignment="Left" Width="300">
+            <Label Content="Plate:" HorizontalAlignment="Left"/>
+            <TextBlock Text="{Binding Vehicle.Plate}" HorizontalAlignment="Right" />
+        </Grid>
+
+        <Grid HorizontalAlignment="Left" Width="300">
+            <Label Content="Stolen:" HorizontalAlignment="Left"/>
+            <CheckBox IsChecked="{Binding Vehicle.StolenStatus}" HorizontalAlignment="Right" />
+        </Grid>
+        <Grid HorizontalAlignment="Left" Width="300">
+            <Label Content="Registered:" HorizontalAlignment="Left"/>
+            <CheckBox  IsChecked="{Binding Vehicle.Registered}" HorizontalAlignment="Right" />
+        </Grid>
+        <Grid HorizontalAlignment="Left" Width="300">
+            <Label Content="Insured:" HorizontalAlignment="Left"/>
+            <CheckBox IsChecked="{Binding Vehicle.Insured}" HorizontalAlignment="Right" />
+        </Grid>
+    </StackPanel>
+</UserControl>

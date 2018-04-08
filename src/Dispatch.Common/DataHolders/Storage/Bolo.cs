@@ -5,16 +5,16 @@ namespace Dispatch.Common.DataHolders.Storage
     [Serializable]
     public class Bolo : IDataHolder, IOwnable, IEventInfo
     {
-        public string SourceIP { get; }
+        public string License { get; }
         public string Player { get; }
         public string Reason { get; }
         public DateTime Creation { get; }
         public BareGuid Id { get; }
 
-        public Bolo(string playerName, string creatorIp, string reason)
+        public Bolo(string playerName, string lic, string reason)
         {
             Player = playerName;
-            SourceIP = string.IsNullOrWhiteSpace(creatorIp) ? string.Empty : creatorIp;
+            License = string.IsNullOrWhiteSpace(lic) ? string.Empty : lic;
             Reason = reason;
             Creation = DateTime.Now;
             Id = BareGuid.NewBareGuid();
@@ -26,7 +26,7 @@ namespace Dispatch.Common.DataHolders.Storage
             {
                 Player,
                 Reason,
-                new EventArgument[] {Id.ToString(), SourceIP, Creation.Ticks}
+                new EventArgument[] {Id.ToString(), License, Creation.Ticks}
             };
         }
     }
